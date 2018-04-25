@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TAPTAPP</string>
+    <string name="app_name">TaxiRapide</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -18,7 +18,7 @@
     <string name="parse_client_key">kzCQgXZ9F04HnVBgRDODdiZJKz9dpbXtMpm3vY14</string>
     <string name="parse_server_url">https://parseapi.back4app.com/</string>
     <string name="title_activity_register">Register</string>
-    <string name="title_activity_main">TAPTAPP</string>
+    <string name="title_activity_main">TaxiRapid</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
