@@ -3,6 +3,7 @@ package ht.queeny.taxirapide2;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -30,6 +31,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -48,41 +53,99 @@ public class RegisterActivity extends AppCompatActivity {
     // UI references.
     private EditText editText_password, editText_email;
     Button registerButton;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        Parse.initialize(this);
+        //Parse.initialize(this);
 
         // Set up the login form.
         editText_email = (EditText) findViewById(R.id.register_email);
-
         editText_password = (EditText) findViewById(R.id.register_password);
-
         registerButton = (Button) findViewById(R.id.email_sign_in_button);
+
+//        registerButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ParseUser user = new ParseUser();
+//                user.setUsername(editText_email.getText().toString());
+//                user.setPassword(editText_password.getText().toString());
+//                user.signUpInBackground(new SignUpCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        if (e == null) {
+//                            //Register Successful
+//                            //you can display sth or do sth
+//                            Toast.makeText(RegisterActivity.this, "Register", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            //Register Fail
+//                            //get error by calling e.getMessage()
+//                            Toast.makeText(RegisterActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//            }
+//        });
+
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser() == null){
+                    // The user has not logged in
+                }else{
+                    // The user has logged in
+                }
+            }
+        };
+
+
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                ParseUser user = new ParseUser();
-                user.setUsername(editText_email.getText().toString());
-                user.setPassword(editText_password.getText().toString());
-                user.signUpInBackground(new SignUpCallback() {
+                String email = editText_email.getText().toString();
+                String pass = editText_password.getText().toString();
+
+                if(email.isEmpty() || pass.isEmpty()){
+                    editText_email.setError("Is empty");
+                    return;
+                }
+
+                if(pass.isEmpty()){
+                    editText_password.setError("Is empty");
+                    return;
+                }
+
+                mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            //Register Successful
-                            //you can display sth or do sth
-                            Toast.makeText(RegisterActivity.this, "Register", Toast.LENGTH_SHORT).show();
-                        } else {
-                            //Register Fail
-                            //get error by calling e.getMessage()
-                            Toast.makeText(RegisterActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            Toast.makeText(RegisterActivity.this, "Sign Up", Toast.LENGTH_SHORT).show();
+
+                        }else {
+                            Toast.makeText(RegisterActivity.this, "Not Sign Up", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         });
+
+
     }
+
+
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+
 }
 
