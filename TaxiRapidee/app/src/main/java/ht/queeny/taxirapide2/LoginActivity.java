@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     // The user has not logged in
                 }else{
                     // The user has logged in
-                    Intent intent = new Intent(LoginActivity.this, Splash.class);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
             }
@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if(task.isSuccessful()){
-                            Intent intent = new Intent(LoginActivity.this, Splash.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             Toast.makeText(LoginActivity.this, "Sign In", Toast.LENGTH_SHORT).show();
 
