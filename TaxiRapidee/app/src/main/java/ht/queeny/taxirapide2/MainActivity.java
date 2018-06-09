@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +24,12 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
+
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.Place;
+
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,7 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener ,PlaceSelectionListener {
     private FirebaseAuth mAuth;
 
 
@@ -56,7 +63,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        autocompleteFragment.setOnPlaceSelectedListener(this);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -76,7 +85,7 @@ public class MainActivity extends AppCompatActivity
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setIndoorLevelPickerEnabled(true);
         mMap.getUiSettings().setMapToolbarEnabled(true);
@@ -86,10 +95,9 @@ public class MainActivity extends AppCompatActivity
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        mMap.setMyLocationEnabled(true);
+//        mMap.setMyLocationEnabled(true);
             // Show rationale and request permission.
         }
-
 
 
     public void onMyLocationClick(@NonNull Location location) {
@@ -102,6 +110,7 @@ public class MainActivity extends AppCompatActivity
         // (the camera animates to the user's current position).
         return false;
     }
+
 
     @Override
     public void onBackPressed() {
@@ -143,5 +152,20 @@ public class MainActivity extends AppCompatActivity
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        // TODO: Get info about the selected place.
+        Log.i("VELLIE", "Place: " + place.getName());
+
+    }
+
+    @Override
+    public void onError(Status status) {
+
+            // TODO: Handle the error.
+            Log.i("VELLIE", "An error occurred: " + status);
+    }
+
 }
 

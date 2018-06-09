@@ -129,6 +129,7 @@ public  class Map extends FragmentActivity  implements LocationListener, OnMapRe
         }
     }
 
+
     private String getDirectionsUrl(LatLng origin,LatLng dest){
 
         // Origin of route
